@@ -1,7 +1,8 @@
 const socket = io();
 
-const canvas = document.getElementById("game");
-const ctx = canvas.getContext("2d");
+function setUp() {
+    createCanvas(800,800)
+}
 
 let players = {};
 
@@ -31,16 +32,15 @@ document.addEventListener("keydown", (e) => {
 
 // Draw loop
 function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+   background(200)
+    
 
-    for (let id in players) {
+    for (let id = 0; id < players.length; i++) {
         let p = players[id];
 
         ctx.fillStyle = (id === socket.id) ? "blue" : "red";
-        ctx.fillRect(p.x, p.y, 20, 20);
+        square(p.x, p.y, 20);
+        
     }
-
-    requestAnimationFrame(draw);
 }
 
-draw();
