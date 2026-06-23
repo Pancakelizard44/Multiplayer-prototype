@@ -37,8 +37,7 @@ function draw() {
 
     for (let id = 0; id < players.length; i++) {
         let p = players[id];
-
-        ctx.fillStyle = (id === socket.id) ? "blue" : "red";
+            fill(round(random() * 255),round(random() * 255))
         square(p.x, p.y, 20);
         
     }
