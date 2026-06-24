@@ -1,7 +1,8 @@
 const socket = io();
 
-const canvas = document.getElementById("game");
-const ctx = canvas.getContext("2d");
+function setup() {
+    createCanvas(800,800)
+}
 
 let players = {};
 
@@ -19,28 +20,45 @@ socket.on("updatePlayers", (serverPlayers) => {
 
 // Movement
 document.addEventListener("keydown", (e) => {
-    let move = { x: 0, y: 0 };
 
-    if (e.key === "w") move.y = -5;
-    if (e.key === "s") move.y = 5;
-    if (e.key === "a") move.x = -5;
-    if (e.key === "d") move.x = 5;
+    if (e.key === "w") {inputY = -1}
+    if (e.key === "s") {inputY = 1}
 
-    socket.emit("move", move);
+    socket.emit("moveY", inputY);
+});
+
+document.addEventListener("keydown", (e) => {
+
+    if (e.key === "a") {inputX = -1}
+    if (e.key === "d") {inputX = 1}
+
+    socket.emit("moveX", inputX);
+});
+
+document.addEventListener("keyup", (e) => {
+
+    if (e.key === "w") {inputY = 0}
+    if (e.key === "s") {inputY = 0}
+
+    socket.emit("moveY", inputY);
+});
+
+document.addEventListener("keyup", (e) => {
+
+    if (e.key === "a") {inputX = 0}
+    if (e.key === "d") {inputX = 0}
+
+    socket.emit("moveX", inputX);
 });
 
 // Draw loop
 function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+   background("blue")
+    
     for (let id in players) {
         let p = players[id];
-
-        ctx.fillStyle = (id === socket.id) ? "blue" : "red";
-        ctx.fillRect(p.x, p.y, 20, 20);
+            fill("red")
+        square(p.x, p.y, 20);
     }
-
-    requestAnimationFrame(draw);
 }
-
-draw();
