@@ -6,6 +6,17 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIO(server);
 
+class serverPlayer {
+        constructor(x, y, v, id) {
+        this.id = id
+        this.x = x
+        this.y = y
+        this.v = v
+        this.xv = 0
+        this.yv = 0
+    }
+}
+
 app.use(express.static("public"));
 
 let players = {};
@@ -14,10 +25,7 @@ io.on("connection", (socket) => {
     console.log("Player connected:", socket.id);
 
     // Create player
-    players[socket.id] = {
-        x: 100,
-        y: 100
-    };
+    players[socket.id] = new serverPlayer(100,100, 5 ,socket.id)
 
     // Send all players to new client
     socket.emit("currentPlayers", players);
@@ -29,12 +37,15 @@ io.on("connection", (socket) => {
     });
 
     // Movement update
-    socket.on("move", (data) => {
-        if (players[socket.id]) {
-            players[socket.id].x += data.x;
-            players[socket.id].y += data.y;
+    socket.on("moveX", (data) => {
 
-            io.emit("updatePlayers", players);
+        if (players[socket.id]) {
+            players[socket.id].vx = data * players[socket.id].v
+        }
+    });
+        socket.on("moveY", (data) => {
+        if (players[socket.id]) {
+            players[socket.id].vy = data * players[socket.id].v
         }
     });
 
@@ -45,6 +56,18 @@ io.on("connection", (socket) => {
     });
 });
 
+function tickUpdates(){
+    for(let id in players){
+        let i = players[id]
+
+        i.x += i.vx || 0
+        i.y += i.vy || 0
+    }
+
+    io.emit("updatePlayers", players)
+}
+
+setInterval(tickUpdates,16);
 
 const PORT = process.env.PORT || 3000;
 
