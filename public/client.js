@@ -76,19 +76,19 @@ function draw() {
    background(200)
 
     if(players[socket.id]){
-    thisPlayer = players[socket.id]
-    camX = thisPlayer.x * cellSize
-    camY = thisPlayer.y * cellSize
-    }
+        thisPlayer = players[socket.id]
+        camX = thisPlayer.x * cellSize
+        camY = thisPlayer.y * cellSize
     
-    push()
-    translate(width/2 - camX, height/2 - camY)
-    pop()
+    
+        push()
+        translate(width/2 - camX, height/2 - camY)
+        pop()
 
-    drawWorld()
+        drawWorld()
 
-    if(players[socket.id]){
-    circle(thisPlayer.x,thisPLayer.y, cellSize)
+
+        circle(thisPlayer.x,thisPLayer.y, cellSize)
     }
     
    // for (let id in players) {
