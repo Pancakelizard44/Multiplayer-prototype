@@ -10,6 +10,19 @@ function setup() {
 function initLevel(){
     cellSize = floor(min(width / (mapSize + 2), height / (mapSize + 2)));
     ellipseMode(CENTER)
+
+        //0=floor 1=walltop 2=wallside
+    map = [
+        [1, 1, 1, 0, 0, 0, 1, 1, 1],
+        [2, 2, 2, 0, 0, 0, 2, 2, 2],
+        [2, 2, 2, 0, 0, 0, 2, 2, 2],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [1, 1, 1, 0, 0, 0, 1, 1, 1],
+        [1, 1, 1, 0, 0, 0, 1, 1, 1],
+        [1, 1, 1, 0, 0, 0, 1, 1, 1],
+    ]
 }
 
 let players = {};
@@ -87,6 +100,24 @@ function draw() {
 }
 
 function drawWorld() {
+        for (let j = 0; j <= 8; j++) {
+            switch (map[i][j]) {
+                case 0:
+                    fill(200);
+                    break;
+                case 1:
+                    fill(50);
+                    break;
+                case 2:
+                    fill("gray");
+                    break;
+                default:
+                    console.log("ERROR the map is not loading properly")
+                    break;
+            }
+            square(j * cellSize, i * cellSize, cellSize)
+        }
+    }
     for (let id in players) {
         let p = players[id];
         fill("red")
