@@ -111,7 +111,6 @@ function drawWorld() {
             }
             square(j * cellSize, i * cellSize, cellSize)
         }
-    }
     for (let id in players) {
         let p = players[id];
         fill("red")
