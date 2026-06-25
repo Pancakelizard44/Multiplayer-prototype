@@ -9,7 +9,7 @@ function setup() {
 
 function initLevel(){
     cellSize = floor(min(width / (mapSize + 2), height / (mapSize + 2)));
-    elipseMode(CENTER)
+    ellipseMode(CENTER)
         
     //0=floor 1=walltop 2=wallside
     map = [
@@ -87,7 +87,7 @@ function draw() {
         drawWorld()
         pop()
 
-        fill("red")
+        fill("blue")
         
         circle(width/2,height/2, cellSize)
     }
@@ -122,6 +122,6 @@ function drawWorld() {
     for (let id in players) {
         let p = players[id];
         fill("red")
-        square(p.x * cellSize, p.y * cellSize, cellSize);
+        circle(p.x * cellSize, p.y * cellSize, cellSize);
     }
 }
