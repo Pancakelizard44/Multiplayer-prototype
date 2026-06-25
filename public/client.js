@@ -66,6 +66,6 @@ function draw() {
     for (let id in players) {
         let p = players[id];
             fill("red")
-        square(p.x, p.y, 20);
+        square(p.x * cellSize, p.y * cellSize, 20);
     }
 }
