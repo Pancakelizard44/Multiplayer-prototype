@@ -8,7 +8,7 @@ function setup() {
 }
 
 function initLevel(){
-        cellSize = floor(min(width / (mazeSize + 2), height / (mazeSize + 2)));
+        cellSize = floor(min(width / (mapSize + 2), height / (mapSize + 2)));
 }
 
 let players = {};
