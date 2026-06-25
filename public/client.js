@@ -81,7 +81,7 @@ function draw() {
         square(p.x * cellSize, p.y * cellSize, cellSize);
     }
 
-    consoel.log(socket.id)
+    console.log(socket.id)
 }
 
 function drawWorld() {
