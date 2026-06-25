@@ -75,17 +75,21 @@ document.addEventListener("keyup", (e) => {
 function draw() {
    background(200)
 
+    if(players[socket.id]){
     thisPlayer = players[socket.id]
     camX = thisPlayer.x * cellSize
     camY = thisPlayer.y * cellSize
-
+    }
+    
     push()
     translate(width/2 - camX, height/2 - camY)
     pop()
 
     drawWorld()
-    
+
+    if(players[socket.id]){
     circle(thisPlayer.x,thisPLayer.y, cellSize)
+    }
     
    // for (let id in players) {
         //let p = players[id];
