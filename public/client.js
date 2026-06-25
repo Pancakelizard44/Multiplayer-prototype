@@ -88,7 +88,7 @@ function draw() {
         drawWorld()
 
 
-        circle(thisPlayer.x,thisPLayer.y, cellSize)
+        circle(thisPlayer.x,thisPlayer.y, cellSize)
     }
     
    // for (let id in players) {
