@@ -96,6 +96,7 @@ function draw() {
 function drawWorld() {
         strokeWeight(0)
         for (let j = 0; j <= 8; j++) {
+            for(let i = 0; i<=8;i++){
             switch (map[i][j]) {
                 case 0:
                     fill(200);
@@ -109,9 +110,11 @@ function drawWorld() {
                 default:
                     console.log("ERROR the map is not loading properly")
                     break;
+            
             }
             square(j * cellSize, i * cellSize, cellSize)
-        }
+            }
+            }
             strokeWeight(3)
     for (let id in players) {
         let p = players[id];
