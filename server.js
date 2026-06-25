@@ -25,7 +25,7 @@ io.on("connection", (socket) => {
     console.log("Player connected:", socket.id);
 
     // Create player
-    players[socket.id] = new serverPlayer(100,100, 5 ,socket.id)
+    players[socket.id] = new serverPlayer(10,10, 0.05 ,socket.id)
 
     // Send all players to new client
     socket.emit("currentPlayers", players);
