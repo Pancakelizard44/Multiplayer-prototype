@@ -88,7 +88,7 @@ function draw() {
 
         fill("red")
         
-        circle(thisPlayer.x,thisPlayer.y, cellSize)
+        circle(width/2,height/2, cellSize)
     }
     
    // for (let id in players) {
