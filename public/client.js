@@ -1,7 +1,14 @@
 const socket = io();
+const mapSize = 20
+let cellSize
 
 function setup() {
-    createCanvas(800,800)
+    createCanvas(windowWidth,windowHeight)
+    initLevel()
+}
+
+function initLevel(){
+        cellSize = floor(min(width / (mazeSize + 2), height / (mazeSize + 2)));
 }
 
 let players = {};
