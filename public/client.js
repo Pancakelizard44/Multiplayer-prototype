@@ -54,7 +54,7 @@ document.addEventListener("keyup", (e) => {
 // Draw loop
 function draw() {
 
-   background("blue")
+   background(200)
     
     for (let id in players) {
         let p = players[id];
