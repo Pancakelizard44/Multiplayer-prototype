@@ -94,6 +94,7 @@ function draw() {
 }
 
 function drawWorld() {
+        strokeWeight(0)
         for (let j = 0; j <= 8; j++) {
             switch (map[i][j]) {
                 case 0:
@@ -111,6 +112,7 @@ function drawWorld() {
             }
             square(j * cellSize, i * cellSize, cellSize)
         }
+            strokeWeight(3)
     for (let id in players) {
         let p = players[id];
         fill("red")
