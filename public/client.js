@@ -75,14 +75,23 @@ document.addEventListener("keyup", (e) => {
 function draw() {
    background(200)
 
-    camX = players[socket.id].x * cellSize
-    camY = players[socket.id].y * cellSize
+    thisPlayer = players[socket.id]
+    camX = thisPlayer.x * cellSize
+    camY = thisPlayer.y * cellSize
+
+    push()
+    translate(width/2 - camX, height/2 - camY)
+    pop()
+
+    drawWorld()
     
-    for (let id in players) {
-        let p = players[id];
-            fill("red")
-        square(p.x * cellSize, p.y * cellSize, cellSize);
-    }
+    circle(thisPlayer.x,thisPLayer.y, cellSize)
+    
+   // for (let id in players) {
+        //let p = players[id];
+            //fill("red")
+        //square(p.x * cellSize, p.y * cellSize, cellSize);
+    //}
 }
 
 function drawWorld() {
