@@ -1,9 +1,9 @@
 const socket = io();
-const mapSize = 20
+const mapSize = 9
 let cellSize
 
 function setup() {
-    createCanvas(windowWidth,windowHeight)
+    createCanvas(500,500)
     initLevel()
 }
 
