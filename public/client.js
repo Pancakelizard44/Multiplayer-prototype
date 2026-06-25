@@ -74,14 +74,15 @@ document.addEventListener("keyup", (e) => {
 // Draw loop
 function draw() {
    background(200)
+
+    camX = players[socket.id].x * cellSize
+    camY = players[socket.id].y * cellSize
     
     for (let id in players) {
         let p = players[id];
             fill("red")
         square(p.x * cellSize, p.y * cellSize, cellSize);
     }
-
-    console.log(socket.id)
 }
 
 function drawWorld() {
