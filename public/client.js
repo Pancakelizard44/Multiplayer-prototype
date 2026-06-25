@@ -83,11 +83,11 @@ function draw() {
     
         push()
         translate(width/2 - camX, height/2 - camY)
+        drawWorld()
         pop()
 
-        drawWorld()
-
-
+        fill("red")
+        
         circle(thisPlayer.x,thisPlayer.y, cellSize)
     }
     
