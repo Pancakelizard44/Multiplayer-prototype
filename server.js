@@ -28,7 +28,11 @@ class serverPlayer {
     }
 
         checkTarget(){
-
+                if(this.xv > 0){
+                        
+                } else if(this.yv < 0) {
+                
+                }
         }
 }
 
