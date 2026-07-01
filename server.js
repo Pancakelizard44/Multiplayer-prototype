@@ -15,6 +15,10 @@ class serverPlayer {
         this.xv = 0
         this.yv = 0
     }
+
+        checkTarget(){
+
+        }
 }
 
 app.use(express.static("public"));
@@ -56,6 +60,8 @@ io.on("connection", (socket) => {
     });
 });
 
+setInterval(tickUpdates,16);
+
 function tickUpdates(){
     for(let id in players){
         let i = players[id]
@@ -66,8 +72,6 @@ function tickUpdates(){
 
     io.emit("updatePlayers", players)
 }
-
-setInterval(tickUpdates,16);
 
 const PORT = process.env.PORT || 3000;
 
