@@ -105,7 +105,7 @@ function drawWorld() {
                     break;
             
             }
-            square(j * cellSize, i * cellSize, cellSize)
+            square(j * cellSize - 1, i * cellSize - 1, cellSize + 2)
             }
             }
             strokeWeight(3)
