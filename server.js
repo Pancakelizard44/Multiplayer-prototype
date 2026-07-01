@@ -1,6 +1,17 @@
 const express = require("express");
 const http = require("http");
 const socketIO = require("socket.io");
+const map = [
+        [1, 1, 1, 0, 0, 0, 1, 1, 1],
+        [2, 2, 2, 0, 0, 0, 2, 2, 2],
+        [2, 2, 2, 0, 0, 0, 2, 2, 2],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [1, 1, 1, 0, 0, 0, 1, 1, 1],
+        [1, 1, 1, 0, 0, 0, 1, 1, 1],
+        [1, 1, 1, 0, 0, 0, 1, 1, 1],
+    ]
 
 const app = express();
 const server = http.createServer(app);
@@ -29,7 +40,7 @@ io.on("connection", (socket) => {
     console.log("Player connected:", socket.id);
 
     // Create player
-    players[socket.id] = new serverPlayer(10,10, 0.05 ,socket.id)
+    players[socket.id] = new serverPlayer(4.5,4.5, 0.05 ,socket.id)
 
     // Send all players to new client
     socket.emit("currentPlayers", players);
