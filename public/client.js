@@ -56,10 +56,10 @@ document.addEventListener("keydown", (e) => {
 
 document.addEventListener("keyup", (e) => {
 
-    if (e.key === "w") {inputY = 0}
-    if (e.key === "s") {inputY = 0}
-    if (e.key === "a") {inputX = 0}
-    if (e.key === "d") {inputX = 0}
+    if (e.key === "w" && inputY < 0) {inputY = 0}
+    if (e.key === "s" && inputY > 0) {inputY = 0}
+    if (e.key === "a" && inputX < 0) {inputX = 0}
+    if (e.key === "d" && inputX > 0) {inputX = 0}
 
     socket.emit("moveY", inputY);
     socket.emit("moveX", inputX);
