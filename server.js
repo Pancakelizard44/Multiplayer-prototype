@@ -28,10 +28,10 @@ class serverPlayer {
     }
 
         checkTarget(){
-                if(this.xv > 0){
-                        
-                } else if(this.yv < 0) {
-                
+                if(this.xv > 0 && (map(Math.round(player.x) + 1, Math.round(player.y) === 1 || map(Math.round(player.x) + 1,Math.round(player.y) === 2)){
+                        this.xv = 0
+                } else if(this.yx < 0 && (map(Math.round(player.x) - 1,  Math.round(player.y) === 1 || map(Math.round(player.x) - 1, Math.round(player.y) === 2)) {
+                        this.xy = 0
                 }
         }
 }
