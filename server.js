@@ -31,8 +31,14 @@ class serverPlayer {
                 if(this.xv > 0 && (map(Math.round(player.x) + 1, Math.round(player.y)) === 1 || map(Math.round(player.x) + 1,Math.round(player.y)) === 2)) {
                         this.xv = 0
                 } else if(this.yx < 0 && (map(Math.round(player.x) - 1,  Math.round(player.y)) === 1 || map(Math.round(player.x) - 1, Math.round(player.y)) === 2)) {
-                        this.xy = 0
+                        this.xv = 0
                 }
+                if(this.xv > 0 && (map(Math.round(player.x), Math.round(player.y) + 1) === 1 || map(Math.round(player.x),Math.round(player.y) + 1) === 2)) {
+                        this.yv = 0
+                } else if(this.yx < 0 && (map(Math.round(player.x) - 1,  Math.round(player.y)) === 1 || map(Math.round(player.x) - 1, Math.round(player.y)) === 2)) {
+                        this.yv = 0
+                }
+                console.log("player ",this.id, " has colided with a wall)
         }
 }
 
@@ -80,7 +86,7 @@ setInterval(tickUpdates,16);
 function tickUpdates(){
     for(let id in players){
         let i = players[id]
-            i.checkTarget()
+        i.checkTarget()
 
         i.x += i.vx || 0
         i.y += i.vy || 0
