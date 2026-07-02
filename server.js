@@ -29,24 +29,29 @@ class serverPlayer {
 
         checkTarget(){
                 
-                if(this.xv > 0 && (map[Math.round(this.y)][ Math.round(this.x) + 1] === 1 || map[Math.round(this.y)][ Math.round(this.x) + 1] === 2)) {
+                if(this.xv > 0 && isWall(this.x + 1,this.y)) {
                         this.xv = 0
                         console.log("player ",this.id, " has colided with a wall")
-                } else if(this.xv < 0 && (map[Math.round(this.y)][ Math.round(this.x) - 1] === 1 || map[Math.round(this.y)][ Math.round(this.x) - 1] === 2)) {
+                } else if(this.xv < 0 && isWall(this.x - 1,this.y)) {
                         this.xv = 0
                         console.log("player ",this.id, " has colided with a wall")
                 }
                 
-                if(this.yv > 0 && (map[Math.round(this.y) + 1][Math.round(this.x)] === 1 || map[Math.round(this.y) + 1][ Math.round(this.x)] === 2)) {
+                if(this.yv > 0 && isWall(this.x,this.y + 1)) {
                         this.yv = 0
                         console.log("player ",this.id, " has colided with a wall")
-                } else if(this.yv < 0 && (map[Math.round(this.y) - 1][ Math.round(this.x)] === 1 || map[Math.round(this.y) - 1][ Math.round(this.x)] === 2)) {
+                } else if(this.yv < 0 && isWall(this.x,this.y - 1)) {
                         this.yv = 0
                         console.log("player ",this.id, " has colided with a wall")
-                }   
+                }
 
-                console.log(Math.round(this.x), Math.round(this.y) , map[Math.round(this.y)][ Math.round(this.x) + 1])
+                console.log(Math.round(this.x), Math.round(this.y))
         }
+}
+
+function isWall(x,y){
+if(wall[y][x] === 1 || wall[y][x] === 2) {return true}
+        return false
 }
 
 app.use(express.static("public"));
