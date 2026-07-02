@@ -30,15 +30,19 @@ class serverPlayer {
         checkTarget(){
                 if(this.xv > 0 && (map(Math.round(player.x) + 1, Math.round(player.y)) === 1 || map(Math.round(player.x) + 1,Math.round(player.y)) === 2)) {
                         this.xv = 0
+                                        console.log("player ",this.id, " has colided with a wall")
                 } else if(this.yx < 0 && (map(Math.round(player.x) - 1,  Math.round(player.y)) === 1 || map(Math.round(player.x) - 1, Math.round(player.y)) === 2)) {
                         this.xv = 0
+                                        console.log("player ",this.id, " has colided with a wall")
                 }
                 if(this.xv > 0 && (map(Math.round(player.x), Math.round(player.y) + 1) === 1 || map(Math.round(player.x),Math.round(player.y) + 1) === 2)) {
                         this.yv = 0
+                                        console.log("player ",this.id, " has colided with a wall")
                 } else if(this.yx < 0 && (map(Math.round(player.x),  Math.round(player.y) - 1) === 1 || map(Math.round(player.x), Math.round(player.y) - 1) === 2)) {
                         this.yv = 0
+                                        console.log("player ",this.id, " has colided with a wall")
                 }
-                console.log("player ",this.id, " has colided with a wall")
+
         }
 }
 
