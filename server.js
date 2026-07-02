@@ -45,7 +45,7 @@ class serverPlayer {
                         console.log("player ",this.id, " has colided with a wall")
                 }   
 
-                console.log(Math.round(this.x), Math.round(this.y))
+                console.log(Math.round(this.x), Math.round(this.y) , map[Math.round(this.y)][ Math.round(this.x) + 1])
         }
 }
 
