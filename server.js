@@ -80,6 +80,7 @@ setInterval(tickUpdates,16);
 function tickUpdates(){
     for(let id in players){
         let i = players[id]
+            i.checkTarget()
 
         i.x += i.vx || 0
         i.y += i.vy || 0
