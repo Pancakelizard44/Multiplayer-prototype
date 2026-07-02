@@ -28,6 +28,7 @@ class serverPlayer {
     }
 
         checkTarget(){
+                
                 if(this.xv > 0 && (map[Math.round(player.y)][ Math.round(player.x) + 1] === 1 || map[Math.round(player.y)][ Math.round(player.x) + 1] === 2)) {
                         this.xv = 0
                         console.log("player ",this.id, " has colided with a wall")
