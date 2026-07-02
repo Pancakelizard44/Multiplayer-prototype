@@ -83,6 +83,7 @@ function draw() {
         fill("blue")
         
         circle(width/2,height/2, cellSize)
+        console.log(Math.round(thisPlayer.x) , Math.round(thisPlayer.y))
     }
 }
 
