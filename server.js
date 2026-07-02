@@ -41,7 +41,7 @@ class serverPlayer {
                         console.log("player ",this.id, " has colided with a wall")
                 } else if(this.yv < 0 && (map[Math.round(player.y) - 1][ Math.round(player.x)] === 1 || map[Math.round(player.y) - 1][ Math.round(player.x)] === 2)) {
                         this.yv = 0
-                        onsole.log("player ",this.id, " has colided with a wall")
+                        console.log("player ",this.id, " has colided with a wall")
                 }        
         }
 }
