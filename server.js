@@ -29,23 +29,23 @@ class serverPlayer {
 
         checkTarget(){
                 
-                if(this.xv > 0 && isWall(this.x + 1,this.y)) {
+                if(this.xv > 0 && (isWall(this.x + 0.55, this.y + 0.5) || isWall(this.x + 0.55, this.y - 0.5))) {
                         this.xv = 0
-                } else if(this.xv < 0 && isWall(this.x - 1,this.y)) {
+                } else if(this.xv < 0 && (isWall(this.x - 0.55, this.y + 0.5) || isWall(this.x - 0.55, this.y - 0.5))) {
                         this.xv = 0
                 }
                 
-                if(this.yv > 0 && isWall(this.x,this.y + 1)) {
+                if(this.yv > 0 && (isWall(this.x + 0.5,this.y + 0.55) || isWall(this.x - 0.5,this.y + 0.55))) {
                         this.yv = 0
-                } else if(this.yv < 0 && isWall(this.x,this.y - 1)) {
+                } else if(this.yv < 0 && (isWall(this.x + 0.5,this.y - 0.55) || isWall(this.x - 0.5,this.y - 0.55))) {
                         this.yv = 0 
                 }
         }
 }
 
 function isWall(x,y){
-    x = Math.round(x)
-    y = Math.round(y)
+    x = Math.floor(x)
+    y = Math.floor(y)
 if(map[y][x] === 1 || map[y][x] === 2) {return true}
         return false
 }
@@ -108,4 +108,3 @@ const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
     console.log("Server running");
 });
-
