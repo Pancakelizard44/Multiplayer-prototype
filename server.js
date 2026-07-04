@@ -31,24 +31,22 @@ class serverPlayer {
                 
                 if(this.xv > 0 && isWall(this.x + 1,this.y)) {
                         this.xv = 0
-                        console.log("player ",this.id, " has colided with a wall")
                 } else if(this.xv < 0 && isWall(this.x - 1,this.y)) {
                         this.xv = 0
-                        console.log("player ",this.id, " has colided with a wall")
                 }
                 
                 if(this.yv > 0 && isWall(this.x,this.y + 1)) {
                         this.yv = 0
-                        console.log("player ",this.id, " has colided with a wall")
                 } else if(this.yv < 0 && isWall(this.x,this.y - 1)) {
-                        this.yv = 0
-                        console.log("player ",this.id, " has colided with a wall")
+                        this.yv = 0 
                 }
         }
 }
 
 function isWall(x,y){
-if(wall[y][x] === 1 || wall[y][x] === 2) {return true}
+    x = Math.round(x)
+    y = Math.round(y)
+if(map[y][x] === 1 || map[y][x] === 2) {return true}
         return false
 }
 
@@ -75,12 +73,12 @@ io.on("connection", (socket) => {
     socket.on("moveX", (data) => {
 
         if (players[socket.id]) {
-            players[socket.id].vx = data * players[socket.id].v
+            players[socket.id].xv = data * players[socket.id].v
         }
     });
         socket.on("moveY", (data) => {
         if (players[socket.id]) {
-            players[socket.id].vy = data * players[socket.id].v
+            players[socket.id].yv = data * players[socket.id].v
         }
     });
 
@@ -98,8 +96,8 @@ function tickUpdates(){
         let i = players[id]
         i.checkTarget()
 
-        i.x += i.vx || 0
-        i.y += i.vy || 0
+        i.x += i.xv || 0
+        i.y += i.yv || 0
     }
 
     io.emit("updatePlayers", players)
