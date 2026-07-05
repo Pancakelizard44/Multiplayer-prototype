@@ -139,7 +139,7 @@ function tickUpdates(){
     }
     for(let id in enemies){
         let i = enemies[id]
-        i.updateEnemy()
+        //i.updateEnemy()
     }
 
     io.emit("updatePlayers", players, enemies)
