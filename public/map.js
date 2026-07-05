@@ -148,7 +148,6 @@ function createMap() {
             }
         }
     }
-    console.log("myMap: ",myMap)
 
-    socket.emit("Map",myMap)
+    socket.emit("myMap",myMap)
 }
