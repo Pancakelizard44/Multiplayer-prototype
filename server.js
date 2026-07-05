@@ -122,7 +122,7 @@ io.on("connection", (socket) => {
         io.emit("updatePlayers", players)
     });
 
-    socket.on("Map", (data) =>{
+    socket.on("myMap", (data) =>{
         map = data
     });
 });
