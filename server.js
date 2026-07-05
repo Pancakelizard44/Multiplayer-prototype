@@ -131,6 +131,7 @@ io.on("connection", (socket) => {
 
 setInterval(tickUpdates,16);
 
+count = 0
 function tickUpdates(){
     for(let id in players){
         let i = players[id]
@@ -141,13 +142,21 @@ function tickUpdates(){
     }
     for(let id in enemies){
         let i = enemies[id]
-        i.updateEnemy()
+            if(count > 10){
+                    i.updateEnemy()
+            }
+
             
         i.x += i.xv
         i.y += i.yv 
     }
 
     io.emit("updatePlayers", players, enemies)
+        if(count > 10){
+                count = 0
+        } else {
+        count ++
+        }
 }
 
 const PORT = process.env.PORT || 3000;
