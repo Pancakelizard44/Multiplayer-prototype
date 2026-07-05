@@ -1,21 +1,11 @@
-const express = require("express");
-const http = require("http");
-const socketIO = require("socket.io");
-const map = [
-        [1, 1, 1, 0, 0, 0, 1, 1, 1],
-        [2, 2, 2, 0, 0, 0, 2, 2, 2],
-        [2, 2, 2, 0, 0, 0, 2, 2, 2],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [1, 1, 1, 0, 0, 0, 1, 1, 1],
-        [1, 1, 1, 0, 0, 0, 1, 1, 1],
-        [1, 1, 1, 0, 0, 0, 1, 1, 1],
-    ]
+const express = require("express")
+const http = require("http")
+const socketIO = require("socket.io")
+let map = []
+const app = express()
+const server = http.createServer(app)
+const io = socketIO(server)
 
-const app = express();
-const server = http.createServer(app);
-const io = socketIO(server);
 
 class serverPlayer {
         constructor(x, y, v, id) {
@@ -43,6 +33,47 @@ class serverPlayer {
         }
 }
 
+class serverEnemy {
+    constructor(x, y, v, range) {
+        this.x = x
+        this.y = y
+        this.v = v
+        this.range = range
+    }
+
+    updateEnemy() {
+        let deltaX = 0
+        let deltaY = 0
+        let distance = this.range
+
+        for (let id in players) {
+            distance = this.range
+
+            let tempX = players[id].x - this.x
+            let tempY = players[id].y - this.y
+            let tempD = Math.sqrt(tempX ** 2 + tempY ** 2)
+
+            if (tempD < distance) {
+                distance = tempD
+                deltaX = tempX
+                deltaY = tempY
+                let target = id
+            }
+        }
+
+        if (deltaX && deltaY) {
+            let moveX = deltaX * (this.v / distance)
+            if (deltaX < 0) { moveX * -1 }
+
+            let moveY = deltaY * (this.v / distance)
+            if (deltaY < 0) { moveY * -1 }
+
+            this.x += moveX
+            this.y += moveY
+        }
+    }
+}
+
 function isWall(x,y){
     x = Math.floor(x)
     y = Math.floor(y)
@@ -50,18 +81,21 @@ if(map[y][x] === 1 || map[y][x] === 2) {return true}
         return false
 }
 
-app.use(express.static("public"));
+app.use(express.static("public"))
 
-let players = {};
+let players = {}
+let enemies = {}
+enemies[1] = new serverEnemy(8,4.5,0.03,5)
 
 io.on("connection", (socket) => {
-    console.log("Player connected:", socket.id);
+
+    console.log("Player connected:", socket.id)
 
     // Create player
     players[socket.id] = new serverPlayer(4.5,4.5, 0.05 ,socket.id)
 
     // Send all players to new client
-    socket.emit("currentPlayers", players);
+    socket.emit("currentPlayers", players)
 
     // Tell others about new player
     socket.broadcast.emit("newPlayer", {
@@ -83,9 +117,13 @@ io.on("connection", (socket) => {
     });
 
     socket.on("disconnect", () => {
-        console.log("Player disconnected:", socket.id);
-        delete players[socket.id];
-        io.emit("updatePlayers", players);
+        console.log("Player disconnected:", socket.id)
+        delete players[socket.id]
+        io.emit("updatePlayers", players)
+    });
+
+    socket.on("Map", (data) =>{
+        map = data
     });
 });
 
@@ -96,15 +134,19 @@ function tickUpdates(){
         let i = players[id]
         i.checkTarget()
 
-        i.x += i.xv || 0
-        i.y += i.yv || 0
+        i.x += i.xv
+        i.y += i.yv 
+    }
+    for(let id in enemies){
+        let i = enemies[id]
+        i.updateEnemy()
     }
 
-    io.emit("updatePlayers", players)
+    io.emit("updatePlayers", players, enemies)
 }
 
 const PORT = process.env.PORT || 3000;
 
 server.listen(PORT, () => {
-    console.log("Server running");
+    console.log("Server running on port ", PORT);
 });
