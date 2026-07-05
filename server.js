@@ -38,6 +38,8 @@ class serverEnemy {
         this.x = x
         this.y = y
         this.v = v
+        this.xv = 0
+        this.yv = 0
         this.range = range
     }
 
@@ -68,8 +70,8 @@ class serverEnemy {
             let moveY = deltaY * (this.v / distance)
             if (deltaY < 0) { moveY * -1 }
 
-            this.x += moveX
-            this.y += moveY
+            this.xv = moveX
+            this.yv = moveY
         }
     }
 }
@@ -140,6 +142,9 @@ function tickUpdates(){
     for(let id in enemies){
         let i = enemies[id]
         i.updateEnemy()
+            
+        i.x += i.xv
+        i.y += i.yv 
     }
 
     io.emit("updatePlayers", players, enemies)
