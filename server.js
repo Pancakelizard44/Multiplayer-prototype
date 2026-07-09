@@ -5,7 +5,9 @@ let map = []
 const app = express()
 const server = http.createServer(app)
 const io = socketIO(server)
-
+let distance 
+let dx
+let dy
 
 class serverPlayer {
         constructor(x, y, v, id) {
@@ -44,50 +46,83 @@ class serverEnemy {
     }
 
     updateEnemy() {
-        let deltaX = 0
-        let deltaY = 0
-        let distance = this.range
+        distance = this.range
 
-        for (let id in players) {
-            distance = this.range
-
-            let tempX = players[id].x - this.x
-            let tempY = players[id].y - this.y
-            let tempD = Math.sqrt(tempX ** 2 + tempY ** 2)
-
-            if (tempD < distance) {
-                distance = tempD
-                deltaX = tempX
-                deltaY = tempY
-                let target = id
+        for(let id in players) {
+            let distance2 = absDistance(this.x,this.y,players[id].x,players[id].y)
+            if(distance2 < distance) {
+                distance = distance2
+                dx = this.x - players[id].x
+                dy = this.y - players[id].y
             }
         }
-
-        if (deltaX && deltaY) {
-            let moveX = deltaX * (this.v / distance)
-            if (deltaX < 0) { moveX * -1 }
-
-            let moveY = deltaY * (this.v / distance)
-            if (deltaY < 0) { moveY * -1 }
-
-            this.xv = moveX
-            this.yv = moveY
+        if(distance < this.range) {
+            this.attack(dx,dy,distance)
+        } else {
+            this.roam()
         }
     }
+
+    attack(dx,dy,d){
+        let moveX = dx * (this.v / d)
+
+        let moveY = dy * (this.v / d)
+
+        if((isWall(this.x,this.y + 1) && this.yv >= 0) || (isWall(this.x, this.y - 1) && this.yv <= 0)){
+            if(moveX > 0){
+                this.xv = this.v * -1
+                this.yv = 0
+            } else {
+                this.xv = this.v
+                this.yv = 0
+            }
+        } else if((isWall(this.x + 1,this.y) && this.xv >= 0) || (isWall(this.x - 1, this.y) && this.xv <= 0)){
+            if(moveY > 0) {
+                this.yv = this.v * -1
+                this.xv = 0
+            } else {
+                this.yv = this.v
+                this.xv = 0
+            }
+        } else {
+        this.xv = moveX * -1
+        this.yv = moveY * -1
+        }
+    }
+
+    roam() {
+        this.xv = 0
+        this.yv = 0
+    }
+}
+
+class item {
+    constructor(x,y,type){
+        this.x = x
+        this.y = y
+        this.type = type
+        this.player
+    }
+
+
 }
 
 function isWall(x,y){
     x = Math.floor(x)
     y = Math.floor(y)
-if(map[y][x] === 1 || map[y][x] === 2) {return true}
-        return false
+    if(myMap[y][x] === 1 || myMap[y][x] === 2) {return true}
+    return false
+}
+
+function absDistance(x1,y1,x2,y2) {
+    return Math.sqrt((x1-x2) ** 2 + (y1-y2) ** 2)
 }
 
 app.use(express.static("public"))
 
 let players = {}
 let enemies = {}
-enemies[1] = new serverEnemy(8,4.5,0.03,5)
+enemies[1] = new serverEnemy(12,4.5,0.03,5)
 
 io.on("connection", (socket) => {
 
@@ -124,14 +159,11 @@ io.on("connection", (socket) => {
         io.emit("updatePlayers", players)
     });
 
-    socket.on("myMap", (data) =>{
-        map = data
-    });
+    socket.emit("updateMap", myMap)
 });
 
 setInterval(tickUpdates,16);
 
-count = 0
 function tickUpdates(){
     for(let id in players){
         let i = players[id]
@@ -142,21 +174,13 @@ function tickUpdates(){
     }
     for(let id in enemies){
         let i = enemies[id]
-            if(count > 10){
-                    i.updateEnemy()
-            }
+        i.updateEnemy()
 
-            
         i.x += i.xv
         i.y += i.yv 
     }
 
     io.emit("updatePlayers", players, enemies)
-        if(count > 10){
-                count = 0
-        } else {
-        count ++
-        }
 }
 
 const PORT = process.env.PORT || 3000;
@@ -164,3 +188,159 @@ const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
     console.log("Server running on port ", PORT);
 });
+
+//map loading
+let mapPresets = [
+    // 0 = crossroads
+    //1-4 = t junction variations
+    //5-8 = L junction variation
+    //9-10 = straight variations
+    [
+        [1, 1, 1, 0, 0, 0, 1, 1, 1],
+        [2, 2, 2, 0, 0, 0, 2, 2, 2],
+        [2, 2, 2, 0, 0, 0, 2, 2, 2],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [1, 1, 1, 0, 0, 0, 1, 1, 1],
+        [1, 1, 1, 0, 0, 0, 1, 1, 1],
+        [1, 1, 1, 0, 0, 0, 1, 1, 1],
+    ],[
+        [1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [2, 2, 2, 2, 2, 2, 2, 2, 2],
+        [2, 2, 2, 2, 2, 2, 2, 2, 2],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [1, 1, 1, 0, 0, 0, 1, 1, 1],
+        [1, 1, 1, 0, 0, 0, 1, 1, 1],
+        [1, 1, 1, 0, 0, 0, 1, 1, 1],
+    ],[
+        [1, 1, 1, 0, 0, 0, 1, 1, 1],
+        [2, 2, 2, 0, 0, 0, 1, 1, 1],
+        [2, 2, 2, 0, 0, 0, 1, 1, 1],
+        [0, 0, 0, 0, 0, 0, 1, 1, 1],
+        [0, 0, 0, 0, 0, 0, 1, 1, 1],
+        [0, 0, 0, 0, 0, 0, 1, 1, 1],
+        [1, 1, 1, 0, 0, 0, 1, 1, 1],
+        [1, 1, 1, 0, 0, 0, 1, 1, 1],
+        [1, 1, 1, 0, 0, 0, 1, 1, 1],
+    ],[
+        [1, 1, 1, 0, 0, 0, 1, 1, 1],
+        [2, 2, 2, 0, 0, 0, 2, 2, 2],
+        [2, 2, 2, 0, 0, 0, 2, 2, 2],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1],
+    ],[
+        [1, 1, 1, 0, 0, 0, 1, 1, 1],
+        [1, 1, 1, 0, 0, 0, 2, 2, 2],
+        [1, 1, 1, 0, 0, 0, 2, 2, 2],
+        [1, 1, 1, 0, 0, 0, 0, 0, 0],
+        [1, 1, 1, 0, 0, 0, 0, 0, 0],
+        [1, 1, 1, 0, 0, 0, 0, 0, 0],
+        [1, 1, 1, 0, 0, 0, 1, 1, 1],
+        [1, 1, 1, 0, 0, 0, 1, 1, 1],
+        [1, 1, 1, 0, 0, 0, 1, 1, 1],
+
+    ],[
+        [1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 2, 2, 2, 2, 2, 2],
+        [1, 1, 1, 2, 2, 2, 2, 2, 2],
+        [1, 1, 1, 0, 0, 0, 0, 0, 0],
+        [1, 1, 1, 0, 0, 0, 0, 0, 0],
+        [1, 1, 1, 0, 0, 0, 0, 0, 0],
+        [1, 1, 1, 0, 0, 0, 1, 1, 1],
+        [1, 1, 1, 0, 0, 0, 1, 1, 1],
+        [1, 1, 1, 0, 0, 0, 1, 1, 1],
+    ],[
+        [1, 1, 1, 0, 0, 0, 1, 1, 1],
+        [1, 1, 1, 0, 0, 0, 2, 2, 2],
+        [1, 1, 1, 0, 0, 0, 2, 2, 2],
+        [1, 1, 1, 0, 0, 0, 0, 0, 0],
+        [1, 1, 1, 0, 0, 0, 0, 0, 0],
+        [1, 1, 1, 0, 0, 0, 0, 0, 0],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1],
+    ],[
+        [1, 1, 1, 0, 0, 0, 1, 1, 1],
+        [2, 2, 2, 0, 0, 0, 1, 1, 1],
+        [2, 2, 2, 0, 0, 0, 1, 1, 1],
+        [0, 0, 0, 0, 0, 0, 1, 1, 1],
+        [0, 0, 0, 0, 0, 0, 1, 1, 1],
+        [0, 0, 0, 0, 0, 0, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1],
+    ],[
+        [1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [2, 2, 2, 2, 2, 2, 1, 1, 1],
+        [2, 2, 2, 2, 2, 2, 1, 1, 1],
+        [0, 0, 0, 0, 0, 0, 1, 1, 1],
+        [0, 0, 0, 0, 0, 0, 1, 1, 1],
+        [0, 0, 0, 0, 0, 0, 1, 1, 1],
+        [1, 1, 1, 0, 0, 0, 1, 1, 1],
+        [1, 1, 1, 0, 0, 0, 1, 1, 1],
+        [1, 1, 1, 0, 0, 0, 1, 1, 1],
+    ],[
+        [1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [2, 2, 2, 2, 2, 2, 2, 2, 2],
+        [2, 2, 2, 2, 2, 2, 2, 2, 2],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 0, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1],
+    ],[
+        [1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [2, 2, 2, 2, 2, 2, 2, 2, 2],
+        [2, 2, 2, 2, 2, 2, 2, 2, 2],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1],
+    ]
+]
+
+let bigGrid = [
+    [5,1,1,1,8],
+    [4,0,0,0,2],
+    [4,0,0,0,2],
+    [4,0,0,0,2],
+    [6,3,3,3,7],
+]
+
+function createArray(w,h,fill){
+    let array = []
+    for(let i = 0; i < h; i++){
+        array[i] = []
+        for(let j = 0; j < w; j++){
+            array[i][j] = fill
+        }
+    }
+    return array
+}
+
+function createMap() {
+    myMap = createArray(bigGrid.length * 9, bigGrid.length * 9, 0)
+
+    for(let i = 0; i < bigGrid.length; i ++) {
+        for(let j = 0; j < bigGrid.length; j++){
+            for(let k = 0; k < 9; k++){
+                for(let l = 0; l < 9; l++){
+                    myMap[k + 9 * i][l + 9 * j] = mapPresets[bigGrid[i][j]][k][l]
+                }
+            }
+        }
+    }
+    console.log("map is loaded")
+}
+
+createMap()
